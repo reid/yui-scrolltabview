@@ -1,19 +1,20 @@
 /*
+yodeler YUI Addons - widget.ScrollTabView
 Copyright 2008 Reid Burke <me@reidburke.com>
 Code licensed under the BSD License: http://internal.reidburke.com/yui-addons/license.txt
 */
 
-YAHOO.namespace('RBwidget');
+YAHOO.namespace('yodeler.widget');
 
-(function() { // ScrollTabView
-
-	YAHOO.RBwidget.ScrollTabView = function (el, attr) {
-		YAHOO.RBwidget.ScrollTabView.superclass.constructor.call(this, el, attr); 
+(function() {
+ 
+	YAHOO.yodeler.widget.ScrollTabView = function (el, attr) {
+		YAHOO.yodeler.widget.ScrollTabView.superclass.constructor.call(this, el, attr); 
 	}
 
-	YAHOO.lang.extend(YAHOO.RBwidget.ScrollTabView, YAHOO.widget.TabView);
+	YAHOO.lang.extend(YAHOO.yodeler.widget.ScrollTabView, YAHOO.widget.TabView);
 
-	var proto = YAHOO.RBwidget.ScrollTabView.prototype;
+	var proto = YAHOO.yodeler.widget.ScrollTabView.prototype;
 	var Dom = YAHOO.util.Dom;
 
 	proto.contentTransition = function(newTab, oldTab) {
@@ -41,18 +42,18 @@ YAHOO.namespace('RBwidget');
 	}
 
 	proto.addTab = function(tab, index) {
-		YAHOO.RBwidget.ScrollTabView.superclass.addTab.call(this, tab, index);
+		YAHOO.yodeler.widget.ScrollTabView.superclass.addTab.call(this, tab, index);
 		_initTabStyle.call(this);
 	}
 
 	proto.removeTab = function(tab, index) {
-		YAHOO.RBwidget.ScrollTabView.superclass.removeTab.call(this, tab, index);
+		YAHOO.yodeler.widget.ScrollTabView.superclass.removeTab.call(this, tab, index);
 		_initTabStyle.call(this);
 	}
 
 	proto.initAttributes = function(attr) {
 
-		YAHOO.RBwidget.ScrollTabView.superclass.initAttributes.call(this, attr);
+		YAHOO.yodeler.widget.ScrollTabView.superclass.initAttributes.call(this, attr);
 
 		this.setAttributeConfig('width', {
 			value: attr.width,
