@@ -1,7 +1,6 @@
 /*
 Copyright 2008 Reid Burke <me@reidburke.com>
 Code licensed under the BSD License: http://internal.reidburke.com/yui-addons/license.txt
-$Id$
 */
 
 YAHOO.namespace('RBwidget');
@@ -65,7 +64,7 @@ YAHOO.namespace('RBwidget');
 		});
 		this.setAttributeConfig('direction', {
 			value: attr.direction,
-			method: _initTabStyle.call(this),
+			method: _initTabStyle.call(this)
 			// todo validator for only horizontal, vertical
 		});
 
@@ -117,6 +116,7 @@ YAHOO.namespace('RBwidget');
 					Dom.setStyle(contentElement, 'height', height + 'px');
 					break;
 			}
+
 		}
 
 	}
