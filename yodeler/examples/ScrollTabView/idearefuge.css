@@ -27,10 +27,36 @@ p {
 	color: #535353;
 }
 
-#intro {
+.intro {
 	font-size: 350%;
 	font-family: Georgia;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #bbb;
+}
+
+.yui-nav {
+	border-bottom: 1px solid #2c832c;
+}
+
+.yui-nav li {
+	padding: 0.25em 0.5em 0.25em;
+	border: 1px solid #2f8c2f;
+	border-width: 1px 1px 0;
+	background-color: #ebfee4;
+}
+
+.yui-nav li.selected {
+	background-color: #2f8c2f;
+}
+
+.yui-nav li.selected a{
+	color: #fff;
+}
+
+.yui-nav li a {
+	text-decoration: none;
+	color: #23831e;
+	font-size: 110%;
+	font-weight: bold;
 }
 
 #ft {

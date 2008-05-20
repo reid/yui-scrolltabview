@@ -26,7 +26,7 @@ YAHOO.namespace('yodeler.widget');
 	 * object to use. 
 	 * An element will be created if none provided.
 	 * @param {Object} attr (optional) A key map of ScrollTabView's 
-     * initial attributes. Ignored if first arg is attributes object.
+	 * initial attributes. Ignored if first arg is attributes object.
 	 */	
 	YAHOO.yodeler.widget.ScrollTabView = function (el, attr) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.constructor.call(this, el, attr); 
@@ -42,9 +42,9 @@ YAHOO.namespace('yodeler.widget');
 	 * that animates between Tab views.
 	 *
 	 * @method contentTransition
-     * @param {YAHOO.widget.Tab} newTab
-     * @param {YAHOO.widget.Tab} oldTab
-     * @return void
+	 * @param {YAHOO.widget.Tab} newTab
+	 * @param {YAHOO.widget.Tab} oldTab
+	 * @return void
 	 */
 	proto.contentTransition = function(newTab, oldTab) {
 		var px, dims, ani;
@@ -72,38 +72,39 @@ YAHOO.namespace('yodeler.widget');
 		ani.animate();
 	}
 
-    /**
-     * Adds a Tab to the ScrollTabView.  
-     * If no index is specified, the tab is added to the end of the tab list.
+	/**
+	 * Adds a Tab to the ScrollTabView.  
+	 * If no index is specified, the tab is added to the end of the tab list.
 	 * 
-     * @method addTab
-     * @param {YAHOO.widget.Tab} tab A Tab instance to add.
-     * @param {Integer} index The position to add the tab. 
-     * @return void
-     */
+	 * @method addTab
+	 * @param {YAHOO.widget.Tab} tab A Tab instance to add.
+	 * @param {Integer} index The position to add the tab. 
+	 * @return void
+	 */
 	proto.addTab = function(tab, index) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.addTab.call(this, tab, index);
 		_initTabStyle.call(this);
 	}
 
 	/**
-     * Removes the specified Tab from the ScrollTabView.
+	 * Removes the specified Tab from the ScrollTabView.
 	 *
-     * @method removeTab
-     * @param {YAHOO.widget.Tab} item The Tab instance to be removed.
-     * @return void
-	*/
+	 * @method removeTab
+	 * @param {YAHOO.widget.Tab} item The Tab instance to be removed.
+	 * @return void
+	 */
 	proto.removeTab = function(tab) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.removeTab.call(this, tab);
+		console.log(tab);
 		_initTabStyle.call(this);
 	}
 
-    /**
-     * setAttributeConfigs ScrollTabView specific properties.
+	/**
+	 * setAttributeConfigs ScrollTabView specific properties.
 	 *
-     * @method initAttributes
-     * @param {Object} attr Hash of initial attributes
-     */
+	 * @method initAttributes
+	 * @param {Object} attr Hash of initial attributes
+	 */
 	proto.initAttributes = function(attr) {
 
 		YAHOO.yodeler.widget.ScrollTabView.superclass.initAttributes.call(this, attr);

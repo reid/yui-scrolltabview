@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
-	<title>yodeler.widget - ScrollTabView vertical example</title>
+	<title>yodeler.widget - ScrollTabView quick, easing</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css">
 	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/tabview/assets/skins/sam/tabview.css"> 
@@ -15,7 +15,7 @@
 	<script src="../../widget/ScrollTabView.js"></script>
 	<script>
 	YAHOO.util.Event.onDOMReady(function() {
-		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { width: 723, height: 300, direction: 'vertical' });
+		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { duration: 0.5, easing: YAHOO.util.Easing.easeIn, width: 723, height: 300, direction: 'vertical' });
 		tabs.set('activeTab', tabs.getTab(0));
 		tabs.addTab(new YAHOO.widget.Tab({label: 'Dynamically Added Tab', content: 'Note that the content now scrolls up and down.'}));
 		tabs.addTab(new YAHOO.widget.Tab({label: 'Cake is a Lie', content: '<p class="intro">CAKE IS LYING OH NO</p>'}));
@@ -32,6 +32,8 @@
 		<div id="yui-main" class="yui-gf">
 			<div class="yui-u first">
 				<div>
+					<p>This example uses a different easing for the animation than the default. (easeIn)</p>
+					<p>This example uses a faster duration than the default (0.5 sec)</p> 
 					<p>This is a Yodeler widget example!</p>
 					<p><a href="http://reidburke.com/yui-addons/">More YUI stuff from Reid Burke!</a></p>
 				</div>
