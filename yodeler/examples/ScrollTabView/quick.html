@@ -12,13 +12,13 @@
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/animation/animation-min.js"></script> 
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/tabview/tabview-min.js"></script>
 
-	<script src="../../widget/ScrollTabView.js"></script>
-	<script>
+	<script type="text/javascript" src="../../widget/ScrollTabView.js"></script>
+	<script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(function() {
 		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { duration: 0.5, width: 723, height: 300, direction: 'vertical' });
 		tabs.set('activeTab', tabs.getTab(0));
 		tabs.addTab(new YAHOO.widget.Tab({label: 'Dynamically Added Tab', content: 'Note that the content now scrolls up and down.'}));
-		tabs.addTab(new YAHOO.widget.Tab({label: 'Cake is a Lie', content: '<p class="intro">CAKE IS LYING OH NO</p>'}));
+		tabs.addTab(new YAHOO.widget.Tab({label: 'Cake is a Lie', content: '<p class="intro">CAKE IS LYING OH NO</' + 'p>'}));
 		tabs.removeTab(tabs.getTab(4));
 	});
 	</script>
@@ -34,7 +34,7 @@
 				<div>
 					<p>This example uses a faster duration than the default (0.5 sec)</p>
 					<p>This is a Yodeler widget example!</p>
-					<p><a href="http://reidburke.com/yui-addons/">More YUI stuff from Reid Burke!</a></p>
+					<p><a href="http://reidburke.com/yui/">More YUI stuff from Reid Burke!</a></p>
 				</div>
 			</div>
 			<div class="yui-u">
