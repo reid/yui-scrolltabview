@@ -4,21 +4,50 @@ Copyright 2008 Reid Burke <me@reidburke.com>
 Code licensed under the BSD License: http://internal.reidburke.com/yui-addons/license.txt
 */
 
+/**
+ * An extension of TabView that transitions between tabs using a Scroll Animation.
+ * 
+ * @namespace YAHOO.yodeler.widget
+ * @module ScrollTabView
+ * @requires yahoo, event, dom, anim, tabview
+ * @author Reid Burke <me@reidburke.com>
+ * @version 0.1
+ */
+
 YAHOO.namespace('yodeler.widget');
 
 (function() {
- 
+
+	/**
+	 * @constructor
+	 * @extends YAHOO.widget.TabView
+	 * @param {HTMLElement | String | Object} el (optional) The html 
+	 * element that represents the ScrollTabView, or the attribute 
+	 * object to use. 
+	 * An element will be created if none provided.
+	 * @param {Object} attr (optional) A key map of ScrollTabView's 
+     * initial attributes. Ignored if first arg is attributes object.
+	 */	
 	YAHOO.yodeler.widget.ScrollTabView = function (el, attr) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.constructor.call(this, el, attr); 
 	}
 
 	YAHOO.lang.extend(YAHOO.yodeler.widget.ScrollTabView, YAHOO.widget.TabView);
 
-	var proto = YAHOO.yodeler.widget.ScrollTabView.prototype;
-	var Dom = YAHOO.util.Dom;
+	var proto = YAHOO.yodeler.widget.ScrollTabView.prototype,
+		Dom = YAHOO.util.Dom;
 
+	/**
+	 * Overrides default contentTransition with a transition
+	 * that animates between Tab views.
+	 *
+	 * @method contentTransition
+     * @param {YAHOO.widget.Tab} newTab
+     * @param {YAHOO.widget.Tab} oldTab
+     * @return void
+	 */
 	proto.contentTransition = function(newTab, oldTab) {
-		var width, px, dims, ani;
+		var px, dims, ani;
 		switch (this.get('direction')) {
 			case 'horizontal':
 				px = this.get('width') * this.getTabIndex(newTab);
@@ -31,47 +60,79 @@ YAHOO.namespace('yodeler.widget');
 		}
 		newTab.set('contentVisible', true);
 		ani = new YAHOO.util.Scroll(this._contentParent,
-			{ scroll: { to: dims } }, 1,
-			YAHOO.util.Easing.easeBothStrong
+			{ scroll: { to: dims } },
+			this.get('duration'),
+			this.get('easing')
 		);
 		ani.onComplete.subscribe(function() {
 			oldTab.set('contentVisible', false);
+			// Keep content visible for effect during transitions
 			oldTab.get('contentEl').style.display = 'block';
 		});
 		ani.animate();
 	}
 
+    /**
+     * Adds a Tab to the ScrollTabView.  
+     * If no index is specified, the tab is added to the end of the tab list.
+	 * 
+     * @method addTab
+     * @param {YAHOO.widget.Tab} tab A Tab instance to add.
+     * @param {Integer} index The position to add the tab. 
+     * @return void
+     */
 	proto.addTab = function(tab, index) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.addTab.call(this, tab, index);
 		_initTabStyle.call(this);
 	}
 
-	proto.removeTab = function(tab, index) {
-		YAHOO.yodeler.widget.ScrollTabView.superclass.removeTab.call(this, tab, index);
+	/**
+     * Removes the specified Tab from the ScrollTabView.
+	 *
+     * @method removeTab
+     * @param {YAHOO.widget.Tab} item The Tab instance to be removed.
+     * @return void
+	*/
+	proto.removeTab = function(tab) {
+		YAHOO.yodeler.widget.ScrollTabView.superclass.removeTab.call(this, tab);
 		_initTabStyle.call(this);
 	}
 
+    /**
+     * setAttributeConfigs ScrollTabView specific properties.
+	 *
+     * @method initAttributes
+     * @param {Object} attr Hash of initial attributes
+     */
 	proto.initAttributes = function(attr) {
 
 		YAHOO.yodeler.widget.ScrollTabView.superclass.initAttributes.call(this, attr);
 
 		this.setAttributeConfig('width', {
-			value: attr.width,
-			method: _initTabStyle.call(this)
+			value: attr.width || false,
+			method: _initTabStyle.call(this),
+			validator: YAHOO.lang.isNumber
 		});
 		this.setAttributeConfig('height', {
-			value: attr.height,
-			method: _initTabStyle.call(this)
+			value: attr.height || false,
+			method: _initTabStyle.call(this),
+			validator: YAHOO.lang.isNumber
 		});
 		this.setAttributeConfig('direction', {
-			value: attr.direction,
+			value: attr.direction || 'horizontal',
 			method: _initTabStyle.call(this)
-			// todo validator for only horizontal, vertical
+		});
+		this.setAttributeConfig('easing', {
+			value: attr.easing || YAHOO.util.Easing.easeBothStrong,
+			validator: YAHOO.lang.isFunction
+		});
+		this.setAttributeConfig('duration', {
+			value: attr.duration || 1,
+			validator: YAHOO.lang.isNumber
 		});
 
-		// todo easing
-		// todo duration
-
+		// Override TabView's refusal to contentTransition
+		// when the tab is already set to contentVisible
 		this.addListener('activeTabChange', function(ev) {
 			var activeTab = this.get('activeTab');
 			if (ev.newValue && !(activeTab && ev.newValue != activeTab)) {
@@ -79,6 +140,7 @@ YAHOO.namespace('yodeler.widget');
 			}
 		});
 
+		// Setup element styles
 		_initTabStyle.call(this);
 	}
 
@@ -90,17 +152,18 @@ YAHOO.namespace('yodeler.widget');
 
 		if (!width || !height || !direction) return false; // wait until all Attributes are set
 
-		var tabs = this.get('tabs');
-
 		Dom.setStyle(this._contentParent, 'overflow', 'hidden');
 		Dom.setStyle(this._contentParent, 'position', 'relative');
 		Dom.setStyle(this._contentParent, 'width', width + 'px');
 		Dom.setStyle(this._contentParent, 'height', height + 'px');
 
+		var tabs = this.get('tabs');
+
 		for (var i = 0, length = tabs.length; i < length; ++i) {
 
 			var contentElement = tabs[i].get('contentEl');
 
+			// Keep content visible for effect during transitions
 			contentElement.style.display = 'block';
 
 			Dom.setStyle(contentElement, 'position', 'absolute');
@@ -110,12 +173,12 @@ YAHOO.namespace('yodeler.widget');
 					Dom.setStyle(contentElement, 'top', '0');
 					Dom.setStyle(contentElement, 'left', (width * i) + 'px');
 					Dom.setStyle(contentElement, 'width', width + 'px');
-					break;
+				break;
 				case 'vertical':
 					Dom.setStyle(contentElement, 'left', '0');
 					Dom.setStyle(contentElement, 'top', (height * i) + 'px');
 					Dom.setStyle(contentElement, 'height', height + 'px');
-					break;
+				break;
 			}
 
 		}
