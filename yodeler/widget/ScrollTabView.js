@@ -164,9 +164,6 @@ YAHOO.namespace('yodeler.widget');
 
 			var contentElement = tabs[i].get('contentEl');
 
-			// Keep content visible for effect during transitions
-			contentElement.style.display = 'block';
-
 			Dom.setStyle(contentElement, 'position', 'absolute');
 			
 			switch (direction) {
@@ -181,6 +178,9 @@ YAHOO.namespace('yodeler.widget');
 					Dom.setStyle(contentElement, 'height', height + 'px');
 				break;
 			}
+
+			// Keep content visible for effect during transitions
+			contentElement.style.display = 'block';
 
 		}
 
