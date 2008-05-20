@@ -1,0 +1,42 @@
+h1 {
+	background: #fff url('idearefuge.gif') no-repeat scroll center center;
+	font-size: 0;
+	width: 400px;
+	height: 108px;
+	margin-left: 24%;
+}
+
+p {
+	padding: 1% 0;
+}
+
+#yui-main {
+	margin-top: 1%;
+	font-size: 121%;
+}
+
+.yui-u img {
+	margin: 0 auto 0;
+}
+
+#yui-main div.first div {
+	text-align: right;
+	border-right: 5px solid #ccc;
+	height: 250px;
+	padding: 2% 7% 0;
+	color: #535353;
+}
+
+#intro {
+	font-size: 350%;
+	font-family: Georgia;
+	border-bottom: 1px solid #ccc;
+}
+
+#ft {
+	font-size: 90%;
+	margin: 3%;
+	text-align: center;
+	color: #aaa;
+	text-transform: uppercase;
+}

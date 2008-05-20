@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<title>RBWidget - ScrollTabView vertical example</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css">
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/tabview/assets/skins/sam/tabview.css"> 
+	<link rel="stylesheet" type="text/css" href="idearefuge.css">
+	
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/element/element-beta-min.js"></script> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/animation/animation-min.js"></script> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/tabview/tabview-min.js"></script>
+
+	<script src="../../RBwidget.js"></script>
+	<script>
+	YAHOO.util.Event.onDOMReady(function() {
+		var tabs = new YAHOO.RBwidget.ScrollTabView('canvas', { width: 700, height: 300, direction: 'vertical' });
+		tabs.set('activeTab', tabs.getTab(0));
+		tabs.addTab(new YAHOO.widget.Tab({label: 'Dynamically Added Tab', content: 'Note that the content now scrolls up and down.'}));
+	});
+	</script>
+</head>
+<body>
+<div id="doc4">
+	<div id="hd">
+		<h1>idearefuge</h1>
+	</div>
+	<div id="bd">
+		<div id="yui-main" class="yui-gf">
+			<div class="yui-u first">
+				<div>
+					<p>idearefuge, llc</p>
+					<p>808 North Beadle Drive<br>
+					Carbondale, IL 62901-1065</p>
+					<p>618.549.5099</p>
+					<p><a href="mailto:ideas@idearefuge.com">ideas@idearefuge.com</a></p>
+				</div>
+			</div>
+			<div class="yui-u">
+				<div id="canvas" class="yui-navset">
+					<ul class="yui-nav">
+						<li><a href="#" id="introl">Intro</a></li>
+						<li><a href="#" id="about">About</a></li>
+						<li><a href="#" id="dsa">YUI</a></li>
+					</ul>
+					<div class="yui-content">
+						<div>
+							<div id="intro">Welcome to a refuge for fresh, new ideas.</div>
+							<p>We are a new company dedicated to making content
+							easier for you to use and enjoy. We're hard at work
+							developing ideas to change the internet for the better.</p>
+							<p>If that sort of thing interests you, please contact us.</p>
+						</div>
+						<div>
+							<div id="intro">We want to hear from you.</div>
+							<p>Contact us today.</p>
+						</div>
+						<div>
+							<div id="intro">YUI</div>
+							<p>We specialize in the Yahoo! UI Library.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="log"></div>
+	</div>
+	<div id="ft">
+		A Reid Burke Production &mdash; &copy; 2008 idearefuge, llc  &mdash; All Rights Reserved
+	</div>
+</div> 
+</body>
+</html>
+
