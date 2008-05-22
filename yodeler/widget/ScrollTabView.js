@@ -95,7 +95,6 @@ YAHOO.namespace('yodeler.widget');
 	 */
 	proto.removeTab = function(tab) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.removeTab.call(this, tab);
-		console.log(tab);
 		_initTabStyle.call(this);
 	}
 
