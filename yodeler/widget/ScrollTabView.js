@@ -28,7 +28,7 @@ YAHOO.namespace('yodeler.widget');
 	 * @param {Object} attr (optional) A key map of ScrollTabView's 
 	 * initial attributes. Ignored if first arg is attributes object.
 	 */	
-	YAHOO.yodeler.widget.ScrollTabView = function (el, attr) {
+	YAHOO.yodeler.widget.ScrollTabView = function(el, attr) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.constructor.call(this, el, attr); 
 	}
 
@@ -48,15 +48,12 @@ YAHOO.namespace('yodeler.widget');
 	 */
 	proto.contentTransition = function(newTab, oldTab) {
 		var px, dims, ani;
-		switch (this.get('direction')) {
-			case 'horizontal':
-				px = this.get('width') * this.getTabIndex(newTab);
-				dims = [px, 0];
-			break;
-			case 'vertical':
-				px = this.get('height') * this.getTabIndex(newTab);
-				dims = [0, px]
-			break;
+		if (_isVertical.call(this)) {
+			px = this.get('height') * this.getTabIndex(newTab);
+			dims = [0, px];
+		} else {
+			px = this.get('width') * this.getTabIndex(newTab);
+			dims = [px, 0];
 		}
 		newTab.set('contentVisible', true);
 		ani = new YAHOO.util.Scroll(this._contentParent,
@@ -83,7 +80,7 @@ YAHOO.namespace('yodeler.widget');
 	 */
 	proto.addTab = function(tab, index) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.addTab.call(this, tab, index);
-		_initTabStyle.call(this);
+		_computeStyle.call(this);
 	}
 
 	/**
@@ -95,7 +92,28 @@ YAHOO.namespace('yodeler.widget');
 	 */
 	proto.removeTab = function(tab) {
 		YAHOO.yodeler.widget.ScrollTabView.superclass.removeTab.call(this, tab);
-		_initTabStyle.call(this);
+		_computeStyle.call(this);
+	}
+
+	proto.setTab = function(idx) {
+console.log('baby');
+		this.set('activeTab', this.getTab(idx));
+	}
+
+	proto.previousTab = function() {
+console.log('hey');
+		var idx = this.getTabIndex();
+		var dst = idx - 1;
+		if (dst >= 0)
+			this.setTab(dst);	
+	}
+
+	proto.nextTab = function() {
+		var idx = this.getTabIndex();
+		var len = this.get('tabs').length;
+		var dst = idx + 1;
+		if (dst <= len)
+			this.setTab(dst);
 	}
 
 	/**
@@ -108,19 +126,27 @@ YAHOO.namespace('yodeler.widget');
 
 		YAHOO.yodeler.widget.ScrollTabView.superclass.initAttributes.call(this, attr);
 
+		var self = this;
+		
 		this.setAttributeConfig('width', {
 			value: attr.width || false,
-			method: _initTabStyle.call(this),
+			method: _computeStyle.call(this),
 			validator: YAHOO.lang.isNumber
 		});
 		this.setAttributeConfig('height', {
 			value: attr.height || false,
-			method: _initTabStyle.call(this),
+			method: _computeStyle.call(this),
 			validator: YAHOO.lang.isNumber
 		});
 		this.setAttributeConfig('direction', {
 			value: attr.direction || 'horizontal',
-			method: _initTabStyle.call(this)
+			method: _computeStyle.call(this),
+			validator: function(direction) {
+				if (YAHOO.lang.isString(direction)) {
+					return 'horizontal,vertical'.indexOf(direction.toLowerCase()) != -1;
+				}
+				return false;
+			}
 		});
 		this.setAttributeConfig('easing', {
 			value: attr.easing || YAHOO.util.Easing.easeBothStrong,
@@ -130,6 +156,44 @@ YAHOO.namespace('yodeler.widget');
 			value: attr.duration || 1,
 			validator: YAHOO.lang.isNumber
 		});
+		this.setAttributeConfig('tabList', {
+			value: attr.tabList || true,
+			method: function(bool) {
+console.log(bool);
+				var el_parent = this.getElementsByClassName(this.TAB_PARENT_CLASSNAME, 'ul')[0];
+console.log(el_parent);
+				if (bool) {
+					if (!el_parent) {
+						var el = document.createElement('ul');
+						Dom.addClass(el, this.TAB_PARENT_CLASSNAME);
+						this.get('element').addChild(el);
+						this._tabParent = el;
+					}
+				} else if (el_parent) {
+					this.get('element').removeChild(this._tabParent);
+					this._tabParent = null;
+				}
+				return bool;
+			},
+			validator: YAHOO.lang.isBoolean
+		});
+		this.setAttributeConfig('prevElement', {
+			value: attr.prevElement || null,
+			method: function(el) {
+				var prevEl = this.get('prevElement');
+				if (prevEl) {
+					YAHOO.util.Event.removeListener(prevEl, 'click', self._previousTabEvent);
+				}
+				prevEl = Dom.get(prevEl);
+console.log(prevEl);
+				if (prevEl) {
+var lol =			YAHOO.util.Event.addListener(prevEl, 'click', self._previousTabEvent, self);
+console.log(lol);
+				}
+				return prevEl;
+			}
+		});
+			
 
 		// Override TabView's refusal to contentTransition
 		// when the tab is already set to contentVisible
@@ -141,10 +205,18 @@ YAHOO.namespace('yodeler.widget');
 		});
 
 		// Setup element styles
-		_initTabStyle.call(this);
+		_computeStyle.call(this);
 	}
 
-	var _initTabStyle = function() {
+	proto._previousTabEvent = function(ev, self) {
+		self.previousTab.call(self);
+	}
+
+	var _isVertical = function() {
+		return this.get('direction') == 'vertical';
+	}
+
+	var _computeStyle = function() {
 
 		var width = this.get('width');
 		var height = this.get('height');
@@ -164,24 +236,23 @@ YAHOO.namespace('yodeler.widget');
 			var contentElement = tabs[i].get('contentEl');
 
 			Dom.setStyle(contentElement, 'position', 'absolute');
-			
-			switch (direction) {
-				case 'horizontal':
-					Dom.setStyle(contentElement, 'top', '0');
-					Dom.setStyle(contentElement, 'left', (width * i) + 'px');
-					Dom.setStyle(contentElement, 'width', width + 'px');
-				break;
-				case 'vertical':
-					Dom.setStyle(contentElement, 'left', '0');
-					Dom.setStyle(contentElement, 'top', (height * i) + 'px');
-					Dom.setStyle(contentElement, 'height', height + 'px');
-				break;
+		
+			if (_isVertical.call(this)) {	
+				Dom.setStyle(contentElement, 'left', '0');
+				Dom.setStyle(contentElement, 'top', (height * i) + 'px');
+				Dom.setStyle(contentElement, 'height', height + 'px');
+			} else {
+				Dom.setStyle(contentElement, 'top', '0');
+				Dom.setStyle(contentElement, 'left', (width * i) + 'px');
+				Dom.setStyle(contentElement, 'width', width + 'px');
 			}
 
 			// Keep content visible for effect during transitions
 			contentElement.style.display = 'block';
 
 		}
+
+		Dom.setStyle(this._contentParent, 'visibility', 'visible');
 
 	}
 

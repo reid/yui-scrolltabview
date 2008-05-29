@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<title>yodeler.widget - ScrollTabView horizontal example</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/reset-fonts-grids/reset-fonts-grids.css">
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/tabview/assets/skins/sam/tabview.css"> 
+	<link rel="stylesheet" type="text/css" href="idearefuge.css">
+	<!--
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/element/element-beta-min.js"></script> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/animation/animation-min.js"></script> 
+	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/tabview/tabview-debug.js"></script>
+-->
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.5.2/build/logger/assets/skins/sam/logger.css"> 
+
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/yahoo/yahoo-debug.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/dom/dom-debug.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/event/event-debug.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/animation/animation-debug.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/logger/logger-debug.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/element/element-beta-debug.js"></script> 
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/tabview/tabview-debug.js"></script> 
+
+
+	<script type="text/javascript" src="../../widget/ScrollTabView.js"></script>
+	<script type="text/javascript">
+	YAHOO.util.Event.onDOMReady(function() {
+		var myLogReader = new YAHOO.widget.LogReader('log', {sources: ['Event'] } );
+		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { width: 723, height: 300, direction: 'horizontal', prevElement: 'canvas-prev' });
+		tabs.set('activeTab', tabs.getTab(0));
+		tabs.addTab(new YAHOO.widget.Tab({label: 'Dynamically Added Tab', content: 'The content moves from left to right in this example.'}));
+		tabs.nextTab();
+	});
+	</script>
+	<style type="text/css">
+		/* Styles for previous and next buttons */
+		.scrolltabview-prev {
+		}
+		.scrolltabview-next {
+		}
+	</style>
+</head>
+<body>
+<div id="doc4">
+	<div id="hd">
+		<h1>idearefuge</h1>
+	</div>
+	<div id="bd">
+		<div id="yui-main" class="yui-gf">
+			<div class="yui-u first">
+				<div>
+					<p>This is a Yodeler widget example!</p>
+					<p><a href="http://reidburke.com/yui/">More YUI stuff from Reid Burke!</a></p>
+				</div>
+			</div>
+			<div class="yui-u">
+				<div id="canvas" class="yui-navset">
+					<div class="scrolltabview-prev">
+						<img src="images/left-enabled.gif" id="canvas-prev">
+					</div>
+					<div class="scrolltabview-next">
+						<img src="images/right-enabled.gif">
+					</div>
+					<ul class="yui-nav">
+						<li><a href="#intro">Welcome</a></li>
+						<li><a href="#contact">Contact</a></li>
+						<li><a href="#yui">YUI</a></li>
+					</ul>
+					<div class="yui-content">
+						<div>
+							<div class="intro" id="intro">Welcome to a refuge for fresh, new ideas.</div>
+							<p>We are a new company dedicated to making content
+							easier for you to use and enjoy. We're hard at work
+							developing ideas to change the internet for the better.</p>
+							<p>If that sort of thing interests you, please contact us.</p>
+						</div>
+						<div>
+							<div class="intro" id="contact">We want to hear from you.</div>
+							<p>Contact us today.</p>
+						</div>
+						<div>
+							<div class="intro" id="yui">YUI</div>
+							<p>We specialize in the Yahoo! UI Library.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="log"></div>
+	</div>
+	<div id="ft">
+		A Reid Burke Production &mdash; &copy; 2008 &mdash; All Rights Reserved
+	</div>
+</div> 
+</body>
+</html>
+
