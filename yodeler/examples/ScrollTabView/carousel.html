@@ -27,7 +27,7 @@
 	<script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(function() {
 		var myLogReader = new YAHOO.widget.LogReader('log', {sources: ['Event'] } );
-		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { width: 723, height: 300, direction: 'horizontal', prevElement: 'canvas-prev' });
+		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { width: 723, height: 300, direction: 'horizontal', prevElement: 'canvas-prev', nextElement: 'canvas-next' });
 		tabs.set('activeTab', tabs.getTab(0));
 		tabs.addTab(new YAHOO.widget.Tab({label: 'Dynamically Added Tab', content: 'The content moves from left to right in this example.'}));
 		tabs.nextTab();
@@ -60,7 +60,7 @@
 						<img src="images/left-enabled.gif" id="canvas-prev">
 					</div>
 					<div class="scrolltabview-next">
-						<img src="images/right-enabled.gif">
+						<img src="images/right-enabled.gif" id="canvas-next">
 					</div>
 					<ul class="yui-nav">
 						<li><a href="#intro">Welcome</a></li>

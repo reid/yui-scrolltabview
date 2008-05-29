@@ -95,25 +95,24 @@ YAHOO.namespace('yodeler.widget');
 		_computeStyle.call(this);
 	}
 
-	proto.setTab = function(idx) {
-console.log('baby');
-		this.set('activeTab', this.getTab(idx));
+	proto.setActiveTabByIndex = function(idx) {
+		return this.set('activeTab', this.getTab(idx));
+	}
+
+	proto.getActiveTabIndex = function() {
+		return this.getTabIndex(this.get('activeTab'));
 	}
 
 	proto.previousTab = function() {
-console.log('hey');
-		var idx = this.getTabIndex();
-		var dst = idx - 1;
+		var dst = this.getActiveTabIndex() - 1;
 		if (dst >= 0)
-			this.setTab(dst);	
+			this.setActiveTabByIndex(dst);	
 	}
 
 	proto.nextTab = function() {
-		var idx = this.getTabIndex();
-		var len = this.get('tabs').length;
-		var dst = idx + 1;
-		if (dst <= len)
-			this.setTab(dst);
+		var dst = this.getActiveTabIndex() + 1;
+		if (dst <  this.get('tabs').length)
+			this.setActiveTabByIndex(dst);
 	}
 
 	/**
@@ -182,15 +181,27 @@ console.log(el_parent);
 			method: function(el) {
 				var prevEl = this.get('prevElement');
 				if (prevEl) {
-					YAHOO.util.Event.removeListener(prevEl, 'click', self._previousTabEvent);
+					YAHOO.util.Event.removeListener(prevEl, 'click', _previousTabEvent);
 				}
 				prevEl = Dom.get(prevEl);
-console.log(prevEl);
 				if (prevEl) {
-var lol =			YAHOO.util.Event.addListener(prevEl, 'click', self._previousTabEvent, self);
-console.log(lol);
+					YAHOO.util.Event.addListener(prevEl, 'click', _previousTabEvent, self);
 				}
 				return prevEl;
+			}
+		});
+		this.setAttributeConfig('nextElement', {
+			value: attr.nextElement || null,
+			method: function(el) {
+				var nextEl = this.get('nextElement');
+				if (nextEl) {
+					YAHOO.util.Event.removeListener(nextEl, 'click', _nextTabEvent);
+				}
+				nextEl = Dom.get(nextEl);
+				if (nextEl) {
+					YAHOO.util.Event.addListener(nextEl, 'click', _nextTabEvent, self);
+				}
+				return nextEl;
 			}
 		});
 			
@@ -208,8 +219,12 @@ console.log(lol);
 		_computeStyle.call(this);
 	}
 
-	proto._previousTabEvent = function(ev, self) {
-		self.previousTab.call(self);
+	var _previousTabEvent = function(ev, self) {
+		self.previousTab();
+	}
+
+	var _nextTabEvent = function(ev, self) {
+		self.nextTab();
 	}
 
 	var _isVertical = function() {
