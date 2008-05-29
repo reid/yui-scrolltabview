@@ -11,9 +11,10 @@
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/element/element-beta-min.js"></script> 
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/animation/animation-min.js"></script> 
 	<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/tabview/tabview-debug.js"></script>
--->
-<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.5.2/build/logger/assets/skins/sam/logger.css"> 
+	-->
 
+<!-- Debugging fun -->
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.5.2/build/logger/assets/skins/sam/logger.css"> 
 <script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/yahoo/yahoo-debug.js"></script> 
 <script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/dom/dom-debug.js"></script> 
 <script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/event/event-debug.js"></script> 
@@ -22,12 +23,48 @@
 <script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/element/element-beta-debug.js"></script> 
 <script type="text/javascript" src="http://yui.yahooapis.com/2.5.2/build/tabview/tabview-debug.js"></script> 
 
-
 	<script type="text/javascript" src="../../widget/ScrollTabView.js"></script>
 	<script type="text/javascript">
+
+// With thanks to Bill Scott
+var handlePrevButtonState = function(type, args) {
+
+	var enabling = args[0];
+	var leftImage = args[1];
+	if(enabling) {
+		leftImage.src = "images/left-enabled.gif";	
+	} else {
+		leftImage.src = "images/left-disabled.gif";	
+	}
+	
+};
+
+var handleNextButtonState = function(type, args) {
+
+	var enabling = args[0];
+	var rightImage = args[1];
+	
+	if(enabling) {
+		rightImage.src = "images/right-enabled.gif";
+	} else {
+		rightImage.src = "images/right-disabled.gif";
+	}
+	
+};
+
+
 	YAHOO.util.Event.onDOMReady(function() {
 		var myLogReader = new YAHOO.widget.LogReader('log', {sources: ['Event'] } );
-		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', { width: 723, height: 300, direction: 'horizontal', prevElement: 'canvas-prev', nextElement: 'canvas-next' });
+		var tabs = new YAHOO.yodeler.widget.ScrollTabView('canvas', {
+			width: 723,
+			height: 300,
+			direction: 'horizontal',
+			prevElement: 'canvas-prev', 
+			nextElement: 'canvas-next',
+			tabList: false
+	//		prevElementStateHandler: handlePrevButtonState,
+	//		nextElementStateHandler: handleNextButtonState
+		 });
 		tabs.set('activeTab', tabs.getTab(0));
 		tabs.addTab(new YAHOO.widget.Tab({label: 'Dynamically Added Tab', content: 'The content moves from left to right in this example.'}));
 		tabs.nextTab();

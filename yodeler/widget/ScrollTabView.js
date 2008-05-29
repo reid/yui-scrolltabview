@@ -34,8 +34,18 @@ YAHOO.namespace('yodeler.widget');
 
 	YAHOO.lang.extend(YAHOO.yodeler.widget.ScrollTabView, YAHOO.widget.TabView);
 
+	// Shorthand
 	var proto = YAHOO.yodeler.widget.ScrollTabView.prototype,
+		Event = YAHOO.util.Event,
 		Dom = YAHOO.util.Dom;
+
+	// Events
+	proto._prevElementStateHandlerEvent = null;
+	proto._nextElementStateHandlerEvent = null;
+
+	// Previous and Next elements
+	proto._prevElementEnabled = false;
+	proto._nextElementEnabled = false;
 
 	/**
 	 * Overrides default contentTransition with a transition
@@ -95,24 +105,48 @@ YAHOO.namespace('yodeler.widget');
 		_computeStyle.call(this);
 	}
 
-	proto.setActiveTabByIndex = function(idx) {
+	/**
+	 * Set the activeTab property based on an its position
+	 *
+	 * @method setActiveTabIndex
+	 * @param {Integer} idx The position to become active
+	 */
+	proto.setActiveTabIndex = function(idx) {
 		return this.set('activeTab', this.getTab(idx));
 	}
 
+	/**
+	 * Get the activeTab's position
+	 *
+	 * @method getActiveTabIndex
+	 * @return {Integer} idx The tab's position
+	 */
 	proto.getActiveTabIndex = function() {
 		return this.getTabIndex(this.get('activeTab'));
 	}
 
+	/**
+	 * Go to the previous tab
+	 *
+	 * @method previousTab
+	 * @return void
+	 */
 	proto.previousTab = function() {
 		var dst = this.getActiveTabIndex() - 1;
-		if (dst >= 0)
-			this.setActiveTabByIndex(dst);	
+		if (_checkPrevBounds(dst))
+			this.setActiveTabIndex(dst);	
 	}
 
+	/**
+	 * Go to the next tab
+	 *
+	 * @method nextTab
+	 * @return void
+	 */
 	proto.nextTab = function() {
 		var dst = this.getActiveTabIndex() + 1;
-		if (dst <  this.get('tabs').length)
-			this.setActiveTabByIndex(dst);
+		if (_checkNextBounds.call(this, dst))
+			this.setActiveTabIndex(dst);
 	}
 
 	/**
@@ -155,20 +189,23 @@ YAHOO.namespace('yodeler.widget');
 			value: attr.duration || 1,
 			validator: YAHOO.lang.isNumber
 		});
+		this.setAttributeConfig('wrap', {
+			value: attr.wrap || false,
+			validator: YAHOO.lang.isBoolean
+		});
 		this.setAttributeConfig('tabList', {
 			value: attr.tabList || true,
 			method: function(bool) {
-console.log(bool);
-				var el_parent = this.getElementsByClassName(this.TAB_PARENT_CLASSNAME, 'ul')[0];
-console.log(el_parent);
+				// fixme: when set to false, a _tabParent element must exist
+				// (in markup) or else _computeStyle gives up
 				if (bool) {
-					if (!el_parent) {
+					if (!this._tabParent) {
 						var el = document.createElement('ul');
 						Dom.addClass(el, this.TAB_PARENT_CLASSNAME);
 						this.get('element').addChild(el);
 						this._tabParent = el;
 					}
-				} else if (el_parent) {
+				} else if (this._tabParent) {
 					this.get('element').removeChild(this._tabParent);
 					this._tabParent = null;
 				}
@@ -181,11 +218,11 @@ console.log(el_parent);
 			method: function(el) {
 				var prevEl = this.get('prevElement');
 				if (prevEl) {
-					YAHOO.util.Event.removeListener(prevEl, 'click', _previousTabEvent);
+					Event.removeListener(prevEl, 'click', _previousTabEvent);
 				}
 				prevEl = Dom.get(prevEl);
 				if (prevEl) {
-					YAHOO.util.Event.addListener(prevEl, 'click', _previousTabEvent, self);
+					Event.addListener(prevEl, 'click', _previousTabEvent, self);
 				}
 				return prevEl;
 			}
@@ -195,24 +232,63 @@ console.log(el_parent);
 			method: function(el) {
 				var nextEl = this.get('nextElement');
 				if (nextEl) {
-					YAHOO.util.Event.removeListener(nextEl, 'click', _nextTabEvent);
+					Event.removeListener(nextEl, 'click', _nextTabEvent);
 				}
 				nextEl = Dom.get(nextEl);
 				if (nextEl) {
-					YAHOO.util.Event.addListener(nextEl, 'click', _nextTabEvent, self);
+					Event.addListener(nextEl, 'click', _nextTabEvent, self);
 				}
 				return nextEl;
 			}
 		});
-			
 
-		// Override TabView's refusal to contentTransition
-		// when the tab is already set to contentVisible
+		// fixme: these handlers don't work yet
+
+		this.setAttributeConfig('prevElementStateHandler', {
+			value: attr.prevElementStateHandler || null,
+			method: function(newHandler) {
+				var handler = this.get('prevElementStateHandler');
+				if (handler) {
+					this._prevElementStateHandlerEvent.unsubscribe(handler, self);
+				}
+				if (newHandler) {
+					if (!this._prevElementStateHandlerEvent) {
+						this._prevElementStateHandlerEvent = Event.CustomEvent('onPrevElementStateChange', self);
+					}
+					this._prevElementStateHandlerEvent.subscribe(newHandler, self);
+				}
+				return newHandler;
+			}
+		});
+		this.setAttributeConfig('nextElementStateHandler', {
+			value: attr.nextElementStateHandler || null,
+			method: function(newHandler) {
+				var handler = this.get('nextElementStateHandler');
+				if (handler) {
+					this._nextElementStateHandlerEvent.unsubscribe(handler, self);
+				}
+				if (newHandler) {
+					if (!this._nextElementStateHandlerEvent) {
+						this._nextElementStateHandlerEvent = Event.CustomEvent('onNextElementStateChange', self);
+					}
+					this._nextElementStateHandlerEvent.subscribe(newHandler, self);
+				}
+				return newHandler;
+			}
+		});
+
 		this.addListener('activeTabChange', function(ev) {
+
+			// Override TabView's refusal to contentTransition
+			// when the tab is already set to contentVisible
 			var activeTab = this.get('activeTab');
 			if (ev.newValue && !(activeTab && ev.newValue != activeTab)) {
 				this.contentTransition(ev.newValue, activeTab);
 			}
+
+			// Determine if prev/next Elements need to be enabled or disabled
+			_computeButtonState.call(this);
+
 		});
 
 		// Setup element styles
@@ -229,6 +305,57 @@ console.log(el_parent);
 
 	var _isVertical = function() {
 		return this.get('direction') == 'vertical';
+	}
+
+	var _checkNextBounds = function(idx) {
+		return idx < this.get('tabs').length;
+	}
+
+	var _checkPrevBounds = function(idx) {
+		return idx >= 0;
+	}
+
+
+	// fixme: not working yet
+	var _computeButtonState = function() {
+		if (_checkPrevBounds(this.getActiveTabIndex() - 1)) { // prev button on
+			if (!this._prevElementEnabled) {
+				this._prevElementEnabled = true;
+				if (YAHOO.lang.isObject(this._prevElementStateHandlerEvent))
+					this._prevElementStateHandlerEvent.fire(true, this);
+				var el = this.get('prevElement');
+				if (YAHOO.lang.isObject(el))
+					Event.addListener(el, _previousTabEvent, this);
+			}
+		} else { // prev button off
+			if (this._prevElementEnabled) {
+				this._prevElementEnabled = false;
+				if (YAHOO.lang.isObject(this._prevElementStateHandlerEvent))
+					this._prevElementStateHandlerEvent.fire(false, this);
+				var el = this.get('prevElement');
+				if (YAHOO.lang.isObject(el))
+					Event.removeListener(el, _previousTabEvent);
+			}
+		}
+		if (_checkNextBounds.call(this, this.getActiveTabIndex() + 1)) { // next button on
+			if (!this._nextElementEnabled) {
+				this._nextElementEnabled = true;
+				if (YAHOO.lang.isObject(this._nextElementStateHandlerEvent))
+					this._nextElementStateHandlerEvent.fire(true, this);
+				var el = this.get('nextElement');
+				if (YAHOO.lang.isObject(el))
+					Event.addListener(el, _nextTabEvent, this);
+			}
+		} else { // next button off
+			if (this._nextElementEnabled && !this.get('wrap')) {
+				this._nextElementEnabled = false;
+				if (YAHOO.lang.isObject(this._nextElementStateHandlerEvent))
+					this._nextElementStateHandlerEvent.fire(false, this);
+				var el = this.get('nextElement');
+				if (YAHOO.lang.isObject(el))
+					Event.removeListener(el, _nextTabEvent);
+			}
+		}
 	}
 
 	var _computeStyle = function() {
